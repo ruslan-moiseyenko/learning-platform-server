@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import pluralize from "pluralize";
 import * as dynamoose from "dynamoose";
 
 dotenv.config();
