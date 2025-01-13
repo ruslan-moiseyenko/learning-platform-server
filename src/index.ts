@@ -1,16 +1,16 @@
 import express from "express";
 import dotenv from "dotenv";
-// import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-// import pluralize from "pluralize";
 import * as dynamoose from "dynamoose";
 import {
   clerkMiddleware,
   createClerkClient,
   requireAuth
 } from "@clerk/express";
+import serverless from "serverless-http";
+import seed from "./seed/seedDynamodb";
 
 // ROUTES
 import courseRoutes from "./routes/courseRoutes";
@@ -60,3 +60,16 @@ if (!isProduction) {
     });
   }
 }
+
+const serverlessApp = serverless(app);
+export const handler = async (event: any, context: any) => {
+  if (event.action === "seed") {
+    await seed();
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Data seeded successfully" })
+    };
+  } else {
+    return serverlessApp(event, context);
+  }
+};
